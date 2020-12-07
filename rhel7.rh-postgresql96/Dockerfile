@@ -65,8 +65,9 @@ RUN rm /etc/rhsm-host && \
     rpm -V $INSTALL_PKGS && \
     localedef -f UTF-8 -i en_US en_US.UTF-8 && \
     test "$(id postgres)" = "uid=26(postgres) gid=26(postgres) groups=26(postgres)" && \
-    mkdir -p /var/lib/pgsql/data && \
-    /usr/libexec/fix-permissions /var/run/postgresql
+    mkdir -p /var/lib/pgsql/data
+
+RUN bash /usr/libexec/fix-permissions /var/run/postgresql
 
 # install dev tools used to compile ORACLE_FDW_2_0_0
 RUN yum-config-manager --enable rhel-server-rhscl-7-rpms && \
