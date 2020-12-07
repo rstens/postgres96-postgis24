@@ -1,0 +1,65 @@
+---
+kind: Template
+apiVersion: v1
+metadata:
+  name: postgresql-9.6-oracle-fdw-build-template
+objects:
+  - kind: ImageStream
+    apiVersion: v1
+    metadata:
+      name: postgresql-9.6-oracle-fdw
+      labels:
+        name: postgresql-9.6-oracle-fdw
+        app: InvasivesBC-primary
+        app-group: InvasivesBC
+
+  - kind: BuildConfig
+    apiVersion: v1
+    metadata:
+      name: postgresql-9.6-oracle-fdw
+      labels:
+        name: postgresql-9.6-oracle-fdw
+        app: InvasivesBC-primary
+        app-group: InvasivesBC
+    spec:
+      runPolicy: Serial
+      source:
+        type: Git
+        git:
+          ref: master
+          uri: https://github.com/rstens/postgres96-postgis24.git
+        contextDir: /
+        secrets:
+          - secret:
+              name: etc-pki-entitlement
+            destinationDir: etc-pki-entitlement
+        configMaps:
+          - configMap:
+              name: rhsm-conf
+            destinationDir: rhsm-conf
+          - configMap:
+              name: rhsm-ca
+            destinationDir: rhsm-ca
+      strategy:
+        type: Docker
+        dockerStrategy:
+          noCache: true
+          imageOptimizationPolicy: SkipLayers
+          dockerfilePath: rhel7.rh-postgresql96/Dockerfile
+          from:
+            kind: DockerImage
+            name: registry.access.redhat.com/rhel7:latest
+      output:
+        to:
+          kind: ImageStreamTag
+          name: postgresql-9.6-oracle-fdw:v1-stable
+      resources:
+        requests:
+          cpu: "0"
+          memory: 0Mi
+        limits:
+          cpu: "0"
+          memory: 0Mi
+      triggers:
+        - type: ImageChange
+        - type: ConfigChange
