@@ -10,8 +10,8 @@ objects:
       name: postgresql-9.6-oracle-fdw
       labels:
         name: postgresql-9.6-oracle-fdw
-        app: InvasivesBC-primary
-        app-group: InvasivesBC
+        app: invasivesbc
+        app-group: invasivesbc
     spec:
       runPolicy: Serial
       source:
