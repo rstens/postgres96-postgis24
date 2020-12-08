@@ -142,5 +142,5 @@ RUN bash /usr/libexec/fix-permissions /var/lib/pgsql
 ENV LD_LIBRARY_PATH /usr/lib/oracle/12.2/client64/lib:${LD_LIBRARY_PATH}
 USER 26
 
-ENTRYPOINT ["container-entrypoint"]
-CMD ["run-postgresql"]
+ENTRYPOINT ["/usr/bin/container-entrypoint"]
+CMD ["/usr/bin/run-postgresql"]
