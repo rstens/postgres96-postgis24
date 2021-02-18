@@ -70,7 +70,7 @@ RUN rm /etc/rhsm-host && \
     yum-config-manager --enable rhel-7-server-rpms && \
     yum-config-manager --enable rhel-7-server-optional-rpms && \
     INSTALL_PKGS="rsync tar gettext bind-utils nss_wrapper rh-postgresql$POSTGRESQL_VERSION rh-postgresql$POSTGRESQL_VERSION-postgresql-contrib rh-postgresql$POSTGRESQL_VERSION-syspaths rh-postgresql$POSTGRESQL_PREV_VERSION-postgresql-server" && \
-    INSTALL_PKGS="$INSTALL_PKGS rh-postgresql$POSTGRESQL_VERSION-pgaudit postgis31_12 postgis31_12-client pgrouting_12" && \
+    INSTALL_PKGS="$INSTALL_PKGS rh-postgresql$POSTGRESQL_VERSION-pgaudit" && \
     yum -y --setopt=tsflags=nodocs install $INSTALL_PKGS && \
     rpm -V $INSTALL_PKGS && \
     yum -y clean all --enablerepo='*' && \
@@ -94,17 +94,20 @@ ENV BASH_ENV=${CONTAINER_SCRIPTS_PATH}/scl_enable \
 
 VOLUME ["/var/lib/pgsql/data", "/var/run/postgresql"]
 
-# # Aquire and build PostGIS 3.1, for PostgreSQL 12.5
-# RUN cd /tmp && \
-#     yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm && \
-#     rpm -ivh https://download.postgresql.org/pub/repos/yum/reporpms/EL-6-x86_64/pgdg-redhat-repo-latest.noarch.rpm && \
-#     yum install -y postgis31_12 postgis31_12-client pgrouting_12 --skip-broken
-#     # /usr/bin/install -c -m 755  /usr/pgsql-12.5/lib/postgis* '/opt/rh/rh-postgresql12/root/usr/lib64/pgsql/' && \
-#     # /usr/bin/install -c -m 755  /usr/pgsql-12.5/lib/rtpostgis* '/opt/rh/rh-postgresql12/root/usr/lib64/pgsql/' && \
-#     # /usr/bin/install -c -m 644 /usr/pgsql-12.5/share/extension/postgis* '/opt/rh/rh-postgresql12/root/usr/share/pgsql/extension/' && \
-#     # mv /usr/pgsql-12.5/share/contrib/postgis-2.4/ /opt/rh/rh-postgresql12/root/usr/share/pgsql/contrib/ && \
+# Aquire and build PostGIS 3.1, for PostgreSQL 12.5
+RUN cd /tmp && \
+    rpm -ivh https://download.postgresql.org/pub/repos/yum/reporpms/EL-6-x86_64/pgdg-redhat-repo-latest.noarch.rpm && \
+    yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm && \
+    yum-config-manager --enable PowerTools && \
+    yum module disable postgresql && \
+    yum install -y postgis31_12 postgis31_12-client pgrouting_12 && \
+    /usr/bin/install -c -m 755  /usr/pgsql-12/lib/postgis* '/opt/rh/rh-postgresql12/root/usr/lib64/pgsql/' && \
+    /usr/bin/install -c -m 755  /usr/pgsql-12/lib/rtpostgis* '/opt/rh/rh-postgresql12/root/usr/lib64/pgsql/' && \
+    /usr/bin/install -c -m 644 /usr/pgsql-12/share/extension/postgis* '/opt/rh/rh-postgresql12/root/usr/share/pgsql/extension/' && \
+    mv /usr/pgsql-12.5/share/contrib/postgis-3.1/ /opt/rh/rh-postgresql12/root/usr/share/pgsql/contrib/ 
    
-# RUN rm -rf /tmp/pgdg-redhat-repo-latest.noarch.rpm /var/cache/yum
+RUN rm -rf /tmp/pgdg-redhat-repo-latest.noarch.rpm /var/cache/yum
+
 # Remove entitlements and Subscription Manager configs
 RUN rm -rf /etc/pki/entitlement && \
     rm -rf /etc/rhsm
