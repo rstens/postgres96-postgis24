@@ -98,8 +98,8 @@ VOLUME ["/var/lib/pgsql/data", "/var/run/postgresql"]
 # Aquire and build PostGIS 3.1, for PostgreSQL 12.x
 RUN cd /tmp && \
     rpm -ivh https://download.postgresql.org/pub/repos/yum/reporpms/EL-6-x86_64/pgdg-redhat-repo-latest.noarch.rpm && \
-    yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm && \
-    subscription-manager repos --enable codeready-builder-for-rhel-8-x86_64-rpms
+    yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+    # subscription-manager repos --enable codeready-builder-for-rhel-8-x86_64-rpms
 
 RUN touch /etc/yum/pluginconf.d/rhnplugin.conf && \
     echo  exclude=postgresql* >> /etc/yum/pluginconf.d/rhnplugin.conf && \
@@ -108,7 +108,7 @@ RUN touch /etc/yum/pluginconf.d/rhnplugin.conf && \
 RUN /usr/bin/install -c -m 755  /usr/pgsql-12/lib/postgis* '/opt/rh/rh-postgresql12/root/usr/lib64/pgsql/' && \
     /usr/bin/install -c -m 755  /usr/pgsql-12/lib/rtpostgis* '/opt/rh/rh-postgresql12/root/usr/lib64/pgsql/' && \
     /usr/bin/install -c -m 644 /usr/pgsql-12/share/extension/postgis* '/opt/rh/rh-postgresql12/root/usr/share/pgsql/extension/' && \
-    mv /usr/pgsql-12/share/contrib/postgis-3/ /opt/rh/rh-postgresql12/root/usr/share/pgsql/contrib/ 
+    mv /usr/pgsql-12/share/contrib/postgis-31/ /opt/rh/rh-postgresql12/root/usr/share/pgsql/contrib/ 
    
 RUN rm -rf /tmp/pgdg-redhat-repo-latest.noarch.rpm /var/cache/yum
 
