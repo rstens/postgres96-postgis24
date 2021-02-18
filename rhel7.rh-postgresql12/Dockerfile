@@ -74,6 +74,7 @@ RUN rm /etc/rhsm-host && \
     yum -y --setopt=tsflags=nodocs install $INSTALL_PKGS && \
     rpm -V $INSTALL_PKGS && \
     yum -y clean all --enablerepo='*' && \
+    ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone && \
     localedef -f UTF-8 -i en_US en_US.UTF-8 && \
     test "$(id postgres)" = "uid=26(postgres) gid=26(postgres) groups=26(postgres)" && \
     mkdir -p /var/lib/pgsql/data && \
@@ -98,12 +99,14 @@ VOLUME ["/var/lib/pgsql/data", "/var/run/postgresql"]
 RUN cd /tmp && \
     rpm -ivh https://download.postgresql.org/pub/repos/yum/reporpms/EL-6-x86_64/pgdg-redhat-repo-latest.noarch.rpm && \
     yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm && \
-    yum-config-manager --enable PowerTools && \
-    yum module disable postgresql && \
-    yum install -y postgis31_12 postgis31_12-client pgrouting_12 && \
-    /usr/bin/install -c -m 755  /usr/pgsql-12/lib/postgis* '/opt/rh/rh-postgresql12/root/usr/lib64/pgsql/' && \
-    /usr/bin/install -c -m 755  /usr/pgsql-12/lib/rtpostgis* '/opt/rh/rh-postgresql12/root/usr/lib64/pgsql/' && \
-    /usr/bin/install -c -m 644 /usr/pgsql-12/share/extension/postgis* '/opt/rh/rh-postgresql12/root/usr/share/pgsql/extension/' && \
+    subscription-manager repos --enable codeready-builder-for-rhel-8-x86_64-rpms
+
+RUN yum module disable postgresql && \
+    yum install -y postgis31_12 postgis31_12-client pgrouting_12
+
+RUN /usr/bin/install -c -m 755  /usr/pgsql-12.5/lib/postgis* '/opt/rh/rh-postgresql12/root/usr/lib64/pgsql/' && \
+    /usr/bin/install -c -m 755  /usr/pgsql-12.5/lib/rtpostgis* '/opt/rh/rh-postgresql12/root/usr/lib64/pgsql/' && \
+    /usr/bin/install -c -m 644 /usr/pgsql-12.5/share/extension/postgis* '/opt/rh/rh-postgresql12/root/usr/share/pgsql/extension/' && \
     mv /usr/pgsql-12.5/share/contrib/postgis-3.1/ /opt/rh/rh-postgresql12/root/usr/share/pgsql/contrib/ 
    
 RUN rm -rf /tmp/pgdg-redhat-repo-latest.noarch.rpm /var/cache/yum
