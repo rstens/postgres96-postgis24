@@ -1,4 +1,4 @@
-FROM registry.access.redhat.com/rhel7
+FROM registry.access.redhat.com/rhel8
 
 # PostgreSQL image for OpenShift with PostGIS extension.
 # Volumes:
@@ -34,12 +34,12 @@ LABEL summary=$SUMMARY \
       io.k8s.display-name="PostgreSQL $POSTGRESQL_VERSION" \
       io.openshift.expose-services="5432:postgresql" \
       io.openshift.tags="database,postgresql,postgresql$POSTGRESQL_VERSION,rh-postgresql$POSTGRESQL_VERSION,postgis,postgis$POSTGISV" \
-      name="rhscl/postgresql-$POSTGRESQL_VERSION-rhel7" \
+      name="rhscl/postgresql-$POSTGRESQL_VERSION-rhel8" \
       com.redhat.component="rh-postgresql$POSTGRESQL_VERSION-container" \
       version="1" \
       release="1" \
       com.redhat.license_terms="https://www.redhat.com/en/about/red-hat-end-user-license-agreements#rhel" \
-      usage="podman run -d --name postgresql_database -e POSTGRESQL_USER=user -e POSTGRESQL_PASSWORD=pass -e POSTGRESQL_DATABASE=db -p 5432:5432 rhscl/postgresql-$POSTGRESQL_VERSION-rhel7" \
+      usage="podman run -d --name postgresql_database -e POSTGRESQL_USER=user -e POSTGRESQL_PASSWORD=pass -e POSTGRESQL_DATABASE=db -p 5432:5432 rhscl/postgresql-$POSTGRESQL_VERSION-rhel8" \
       maintainer="SoftwareCollections.org <sclorg@redhat.com>"
 
 EXPOSE 5432
@@ -55,7 +55,7 @@ COPY ./rhsm-ca /etc/rhsm/ca
 # This image must forever use UID 26 for postgres user so our volumes are
 # safe in the future. This should *never* change, the last test is there
 # to make sure of that.
-# rhel-7-server-ose-3.2-rpms is enabled for nss_wrapper until this pkg is
+# rhel-8-server-ose-3.2-rpms is enabled for nss_wrapper until this pkg is
 # in base RHEL
 #
 # We need to call 2 (!) yum commands before being able to enable repositories properly
@@ -66,9 +66,9 @@ RUN rm /etc/rhsm-host && \
     yum repolist > /dev/null && \
     yum install -y yum-utils gettext && \
     yum-config-manager --disable \* &> /dev/null && \
-    yum-config-manager --enable rhel-server-rhscl-7-rpms && \
-    yum-config-manager --enable rhel-7-server-rpms && \
-    yum-config-manager --enable rhel-7-server-optional-rpms && \
+    yum-config-manager --enable rhel-server-rhscl-8-rpms && \
+    yum-config-manager --enable rhel-8-server-rpms && \
+    yum-config-manager --enable rhel-8-server-optional-rpms && \
     INSTALL_PKGS="rsync tar gettext bind-utils nss_wrapper rh-postgresql$POSTGRESQL_VERSION rh-postgresql$POSTGRESQL_VERSION-postgresql-contrib rh-postgresql$POSTGRESQL_VERSION-syspaths rh-postgresql$POSTGRESQL_PREV_VERSION-postgresql-server" && \
     INSTALL_PKGS="$INSTALL_PKGS rh-postgresql$POSTGRESQL_VERSION-pgaudit" && \
     yum -y --setopt=tsflags=nodocs install $INSTALL_PKGS && \
@@ -98,7 +98,7 @@ VOLUME ["/var/lib/pgsql/data", "/var/run/postgresql"]
 # Aquire and build PostGIS 3.1, for PostgreSQL 12.x
 RUN cd /tmp && \
     rpm -ivh https://download.postgresql.org/pub/repos/yum/reporpms/EL-6-x86_64/pgdg-redhat-repo-latest.noarch.rpm && \
-    yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm && \
+    yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm && \
     subscription-manager repos --enable codeready-builder-for-rhel-8-x86_64-rpms
 
 RUN touch /etc/yum/pluginconf.d/rhnplugin.conf && \
