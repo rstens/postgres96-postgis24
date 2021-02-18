@@ -80,6 +80,9 @@ RUN rm /etc/rhsm-host && \
     mkdir -p /var/lib/pgsql/data && \
     /usr/libexec/fix-permissions /var/lib/pgsql /var/run/postgresql
 
+RUN touch /etc/yum/pluginconf.d/rhnplugin.conf && \
+    echo  exclude=postgresql* >> /etc/yum/pluginconf.d/rhnplugin.conf    
+
 RUN bash /usr/libexec/fix-permissions /var/run/postgresql
 
 # Get prefix path and path to scripts rather than hard-code them in scripts
@@ -100,9 +103,7 @@ RUN cd /tmp && \
     rpm -ivh https://download.postgresql.org/pub/repos/yum/reporpms/EL-6-x86_64/pgdg-redhat-repo-latest.noarch.rpm && \
     yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
 
-RUN touch /etc/yum/pluginconf.d/rhnplugin.conf && \
-    echo  exclude=postgresql* >> /etc/yum/pluginconf.d/rhnplugin.conf && \
-    yum install -y postgis31_12 postgis31_12-client pgrouting_12
+RUN yum install -y postgis31_12 postgis31_12-client pgrouting_12
 
 RUN /usr/bin/install -c -m 755  /usr/pgsql-12/lib/postgis* '/opt/rh/rh-postgresql12/root/usr/lib64/pgsql/' && \
     /usr/bin/install -c -m 755  /usr/pgsql-12/lib/rtpostgis* '/opt/rh/rh-postgresql12/root/usr/lib64/pgsql/' && \
