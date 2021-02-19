@@ -98,6 +98,10 @@ ENV BASH_ENV=${CONTAINER_SCRIPTS_PATH}/scl_enable \
 
 VOLUME ["/var/lib/pgsql/data", "/var/run/postgresql"]
 
+COPY root /
+ENV PGCONFIG /opt/rh/rh-postgresql12/root/usr/bin
+ENV PATH /opt/rh/rh-postgresql12/root/usr/bin/:${PATH}
+
 # Aquire and build PostGIS 3.1, for PostgreSQL 12.x
 RUN cd /tmp && \
     rpm -ivh https://download.postgresql.org/pub/repos/yum/reporpms/EL-6-x86_64/pgdg-redhat-repo-latest.noarch.rpm && \
@@ -117,8 +121,6 @@ RUN rm -rf /etc/pki/entitlement && \
     rm -rf /etc/rhsm
 
 RUN bash /usr/libexec/fix-permissions /var/lib/pgsql
-
-COPY root /
 
 USER 26
 
