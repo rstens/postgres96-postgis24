@@ -125,5 +125,7 @@ RUN bash /usr/libexec/fix-permissions /var/lib/pgsql
 
 USER 26
 
+EXPOSE ${PORT}
+
 ENTRYPOINT ["/usr/bin/container-entrypoint"]
 CMD ["/usr/bin/run-postgresql"]
