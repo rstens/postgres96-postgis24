@@ -118,6 +118,8 @@ RUN rm -rf /etc/pki/entitlement && \
 
 RUN bash /usr/libexec/fix-permissions /var/lib/pgsql
 
+COPY root /
+
 USER 26
 
 ENTRYPOINT ["container-entrypoint"]
