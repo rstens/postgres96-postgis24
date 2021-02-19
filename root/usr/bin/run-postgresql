@@ -27,11 +27,6 @@ if $PG_INITIALIZED ; then
     create_users
 fi
 
-if [ ! -f "$PGDATA/fdw.conf" ]; then
-  create_fdw
-fi
-
-create_postgis_pgcrypto
 set_passwords
 pg_ctl stop
 

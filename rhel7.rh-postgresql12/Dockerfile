@@ -10,8 +10,8 @@ FROM registry.redhat.io/rhscl/postgresql-12-rhel7
 #  * $POSTGRESQL_ADMIN_PASSWORD (Optional) - Password for the 'postgres'
 #                           PostgreSQL administrative account
 
-ENV POSTGIS_EXTENSION=Y \
-    PGCRYPTO_EXTENSION=Y \
+ENV POSTGIS_EXTENSION=N \
+    PGCRYPTO_EXTENSION=N \
     POSTGRESQL_VERSION=12 \
     POSTGRESQL_PREV_VERSION=10 \
     HOME=/var/lib/pgsql \
