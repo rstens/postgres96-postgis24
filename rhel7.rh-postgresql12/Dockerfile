@@ -124,5 +124,6 @@ RUN bash /usr/libexec/fix-permissions /var/lib/pgsql
 
 USER 26
 
-ENTRYPOINT ["container-entrypoint"]
-CMD ["run-postgresql"]
+# ENTRYPOINT ["container-entrypoint"]
+# CMD ["run-postgresql"]
+ENTRYPOINT [""]
