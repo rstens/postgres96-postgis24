@@ -100,7 +100,7 @@ VOLUME ["/var/lib/pgsql/data", "/var/run/postgresql"]
 
 COPY root /
 ENV PGCONFIG /opt/rh/rh-postgresql12/root/usr/bin
-ENV PATH /opt/rh/rh-postgresql12/root/usr/bin/:${PATH}
+ENV PATH /opt/rh/rh-postgresql12/root/usr/bin/:/usr/bin/:${PATH}
 
 # Aquire and build PostGIS 3.1, for PostgreSQL 12.x
 RUN cd /tmp && \
