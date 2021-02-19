@@ -109,10 +109,11 @@ RUN cd /tmp && \
 
 RUN yum install -y postgis31_12 postgis31_12-client pgrouting_12
 
-# RUN /usr/bin/install -c -m 755  /usr/pgsql-12/lib/postgis* '/opt/rh/rh-postgresql12/root/usr/lib64/pgsql/' && \
-#     /usr/bin/install -c -m 755  /usr/pgsql-12/lib/rtpostgis* '/opt/rh/rh-postgresql12/root/usr/lib64/pgsql/' && \
-#     /usr/bin/install -c -m 644 /usr/pgsql-12/share/extension/postgis* '/opt/rh/rh-postgresql12/root/usr/share/pgsql/extension/' && \
-#     mv /usr/pgsql-12/share/contrib/postgis-3/ /opt/rh/rh-postgresql12/root/usr/share/pgsql/contrib/ 
+RUN /usr/bin/install -c -m 755  /usr/pgsql-12/lib/postgis* '/opt/rh/rh-postgresql12/root/usr/lib64/pgsql/' && \
+    /usr/bin/install -c -m 755  /usr/pgsql-12/lib/libpgrouting* '/opt/rh/rh-postgresql12/root/usr/lib64/pgsql/' && \
+    /usr/bin/install -c -m 644 /usr/pgsql-12/share/extension/postgis* '/opt/rh/rh-postgresql12/root/usr/share/pgsql/extension/' && \
+    /usr/bin/install -c -m 644 /usr/pgsql-12/share/extension/pgrouting* '/opt/rh/rh-postgresql12/root/usr/share/pgsql/extension/' && \
+    mv /usr/pgsql-12/share/contrib/postgis-3.1/ /opt/rh/rh-postgresql12/root/usr/share/pgsql/contrib/ 
    
 RUN rm -rf /tmp/pgdg-redhat-repo-latest.noarch.rpm /var/cache/yum
 
@@ -124,6 +125,5 @@ RUN bash /usr/libexec/fix-permissions /var/lib/pgsql
 
 USER 26
 
-# ENTRYPOINT ["container-entrypoint"]
-# CMD ["run-postgresql"]
-ENTRYPOINT [""]
+ENTRYPOINT ["/usr/bin/container-entrypoint"]
+CMD ["/usr/bin/run-postgresql"]
