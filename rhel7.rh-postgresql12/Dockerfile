@@ -14,6 +14,7 @@ ENV POSTGIS_EXTENSION=N \
     PGCRYPTO_EXTENSION=N \
     POSTGRESQL_VERSION=12 \
     POSTGRESQL_PREV_VERSION=10 \
+    PGBADGER_VERSION=11.5 \
     HOME=/var/lib/pgsql \
     PGUSER=postgres \
     LC_ALL=en_US.UTF-8 LANG=en_US.UTF-8 \
@@ -67,7 +68,7 @@ RUN rm /etc/rhsm-host && \
     yum-config-manager --enable rhel-server-rhscl-7-rpms && \
     yum-config-manager --enable rhel-7-server-rpms && \
     yum-config-manager --enable rhel-7-server-optional-rpms && \
-    INSTALL_PKGS="rsync tar gettext bind-utils nss_wrapper" && \
+    INSTALL_PKGS="rsync tar gettext bind-utils nss_wrapper wget" && \
     INSTALL_PKGS="$INSTALL_PKGS rh-postgresql$POSTGRESQL_VERSION-pgaudit" && \
     yum -y --setopt=tsflags=nodocs install $INSTALL_PKGS && \
     rpm -V $INSTALL_PKGS && \
@@ -77,6 +78,15 @@ RUN rm /etc/rhsm-host && \
     test "$(id postgres)" = "uid=26(postgres) gid=26(postgres) groups=26(postgres)" && \
     mkdir -p /var/lib/pgsql/data && \
     /usr/libexec/fix-permissions /var/lib/pgsql /var/run/postgresql
+    
+RUN cd /tmp && \
+    wget https://github.com/darold/pgbadger/archive/v$PGBADGER_VERSION.tar.gz  && \
+    tar xzf pgbadger-$PGBADGER_VERSION.tar.gz  && \
+    cd pgbadger-$PGBADGER_VERSION/  && \
+    perl Makefile.PL  && \
+    make && make install
+
+RUN rm -rf /tmp/pgbadger-$PGBADGER_VERSION.tar.gz  /tmp/pgbadger-$PGBADGER_VERSION
 
 RUN touch /etc/yum/pluginconf.d/rhnplugin.conf && \
     echo  exclude=postgresql* >> /etc/yum/pluginconf.d/rhnplugin.conf    
